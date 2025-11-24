@@ -1,0 +1,25 @@
+package com.inventory.medicine.model.drug;
+
+public enum DrugClassification {
+    ANALGESIC,
+    ANTIBIOTIC,
+    ANTISEPTIC,
+    ANTI_ALLERGIC,
+    ANTI_INFLAMMATORY,
+    ANTI_DIABETIC,
+    ANTI_HYPERTENSIVE,
+    ANTI_ULCER,
+    ANTIFUNGAL,
+    ANTIVIRAL,
+    ANTISPASMODIC,
+    ANTIEMETIC,
+    CARDIOVASCULAR,
+    VITAMINS,
+    STEROID,
+    DERMATOLOGICAL,
+    RESPIRATORY,
+    GASTRO_INTESTINAL,
+    OPHTHALMIC,
+    ENT,
+    OTHER
+}

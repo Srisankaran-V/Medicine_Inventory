@@ -1,14 +1,19 @@
-package com.inventory.medicine.model;
+package com.inventory.medicine.model.drug;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(
         name = "drug",
         indexes = {
@@ -21,33 +26,39 @@ public class Drug {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @Column(nullable = false)
+    @NotBlank
     private String name;
 
     @Column(name = "generic_name")
+    @NotBlank
     private String genericName;
 
     @Column(unique = true, name = "drug_code")
     private String drugCode;
 
-    private String classification; // ex: painkiller, antibiotic, etc
+    @Enumerated(EnumType.STRING)
+    private DrugClassification drugClassification; // ex: painkiller, antibiotic, etc
 
+    @Enumerated(EnumType.STRING)
+    private DrugForm drugForm; // Tablet, Syrup, Injection...
 
-    private String form; // Tablet, Syrup, Injection...
-
-    @Column(name = "quantity_in_stock")
+    @Column(name = "quantity_in_stock", nullable = false)
     private Integer quantityInStock;
 
-    @Column(name = "min_stock_level")
+    @Column(name = "min_stock_level", nullable = false)
     private Integer minStockLevel;
 
     @Column(name = "expiry_date")
     private LocalDate expiryDate;
 
-    @Column(scale = 2, precision = 10)
+    @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal sellingPrice;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, name = "drug_status")
+    private DrugStatus drugStatus; //Active, Inactive
 
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -59,8 +70,10 @@ public class Drug {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
 
-        if(status == null) { status = "ACTIVE";}
+        if(drugStatus == null) { drugStatus = DrugStatus.ACTIVE;}
         if(quantityInStock == null) { quantityInStock = 0;}
+        if(minStockLevel == null) { minStockLevel = 0;}
+
 
     }
 
