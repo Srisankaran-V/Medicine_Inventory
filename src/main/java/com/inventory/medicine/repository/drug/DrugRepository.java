@@ -16,6 +16,7 @@ import java.util.Optional;
 @Repository
 public interface DrugRepository extends JpaRepository<Drug, Long> {
 
+
     Optional<Drug> findByDrugCode(String drugCode);
     List<Drug> findByNameContainingIgnoreCase(String name);
     List<Drug> findByGenericNameContainingIgnoreCase(String genericName);
