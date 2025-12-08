@@ -7,13 +7,18 @@ import com.inventory.medicine.model.drug.DrugClassification;
 import com.inventory.medicine.model.drug.DrugForm;
 import com.inventory.medicine.model.drug.DrugStatus;
 import com.inventory.medicine.service.drug.DrugService;
+import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
+
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("api/v1/drug")
@@ -26,12 +31,12 @@ public class DrugController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<DrugResponse> createDrug(@RequestBody CreateDrugRequest createDrugRequest){
+    public ResponseEntity<DrugResponse> createDrug(@Valid @RequestBody CreateDrugRequest createDrugRequest){
         DrugResponse drugResponse = drugService.createDrug(createDrugRequest);
         return new ResponseEntity<>(drugResponse, HttpStatus.CREATED);
     }
-    @PutMapping("/{id}/update")
-    public ResponseEntity<DrugResponse> updateDrug(@PathVariable Long id, @RequestBody UpdateDrugRequest updateDrugRequest){
+    @PutMapping("/{id}")
+    public ResponseEntity<DrugResponse> updateDrug(@PathVariable Long id, @Valid @RequestBody UpdateDrugRequest updateDrugRequest){
         return ResponseEntity.ok(drugService.updateDrug(id, updateDrugRequest));
     }
     @PutMapping("/{id}/soft_delete")
@@ -75,6 +80,53 @@ public class DrugController {
     public ResponseEntity<List<DrugResponse>> getDrugsByStatus(@RequestParam DrugStatus drugStatus){
         return ResponseEntity.ok(drugService.findByDrugStatus(drugStatus));
     }
+    @GetMapping("/filter/equals/{quantityInStock}")
+    public ResponseEntity<List<DrugResponse>> getDrugsByQuantityInStock(@PathVariable Integer quantityInStock){
+        return ResponseEntity.ok(drugService.findByQuantityInStock(quantityInStock));
+    }
+    @GetMapping("/filter/greater_than/{quantityInStock}")
+    public ResponseEntity<List<DrugResponse>> getDrugsByQuantityInStockGreaterThanEqual(@PathVariable Integer quantityInStock){
+        return ResponseEntity.ok(drugService.findByQuantityInStockGreaterThanEqual(quantityInStock));
+    }
+    @GetMapping("/filter/less_than/{quantityInStock}")
+    public ResponseEntity<List<DrugResponse>> getDrugsByQuantityInStockLessThanEqual(@PathVariable Integer quantityInStock){
+        return ResponseEntity.ok(drugService.findByQuantityInStockLessThanEqual(quantityInStock));
+    }
+    @GetMapping("/filter/greater_than/status/{quantityInStock}")
+    public ResponseEntity<List<DrugResponse>> getDrugsByDrugStatusAndQuantityInStockGreaterThanEqual(@RequestParam DrugStatus drugStatus, @PathVariable Integer quantityInStock){
+        return ResponseEntity.ok(drugService.findByDrugStatusAndQuantityInStockGreaterThanEqual(drugStatus,quantityInStock));
+    }
+    @GetMapping("/filter/less_than/status/{quantityInStock}")
+    public ResponseEntity<List<DrugResponse>> getDrugsByDrugStatusAndQuantityInStockLessThanEqual(@RequestParam DrugStatus drugStatus, @PathVariable Integer quantityInStock){
+        return ResponseEntity.ok(drugService.findByDrugStatusAndQuantityInStockLessThanEqual(drugStatus,quantityInStock));
+    }
+    @GetMapping("/filter/low_quantity")
+    public ResponseEntity<List<DrugResponse>> getDrugsByLowQuantityInStock(){
+        return ResponseEntity.ok(drugService.findLowQuantityInStock());
+    }
+    @GetMapping("/filter/low_quantity/status")
+    public ResponseEntity<List<DrugResponse>> getDrugsByLowQuantityInStockAndDrugStatus(@RequestParam DrugStatus drugStatus){
+        return ResponseEntity.ok(drugService.findLowQuantityInStockByDrugStatus(drugStatus));
+    }
+    @GetMapping("/filter/before_expiry")
+    public ResponseEntity<List<DrugResponse>> getDrugsByExpiryDateBefore(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate expiryDate){
+        return ResponseEntity.ok(drugService.findByExpiryDateBefore(expiryDate));
+    }
+    @GetMapping("/filter/between_expiry")
+    public ResponseEntity<List<DrugResponse>> getDrugsByExpiryDateBetween(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to){
+        return ResponseEntity.ok(drugService.findByExpiryDateBetween(from, to));
+    }
+    @GetMapping("/filter/between_created")
+    public ResponseEntity<List<DrugResponse>> getDrugsByCreatedAtBetween(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
+        return ResponseEntity.ok(drugService.findByCreatedAtBetween(from, to));
+    }
+    @GetMapping("/filter/between_update")
+    public ResponseEntity<List<DrugResponse>> getDrugsByUpdatedAtBetween(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to){
+        return ResponseEntity.ok(drugService.findByUpdatedAtBetween(from, to));
+    }
+
+
+
 
 
 
