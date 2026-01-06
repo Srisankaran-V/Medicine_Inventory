@@ -1,10 +1,10 @@
 package com.inventory.medicine.dto.drug;
 
-import com.inventory.medicine.model.drug.DrugClassification;
-import com.inventory.medicine.model.drug.DrugForm;
+import com.inventory.medicine.model.DrugClassification;
+import com.inventory.medicine.model.DrugForm;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record CreateDrugRequest(
         @NotBlank String name,
@@ -14,6 +14,6 @@ public record CreateDrugRequest(
         @NotNull DrugForm drugForm,
         @NotNull @Min(0) Integer quantityInStock,
         @NotNull @Min(0) Integer minStockLevel,
-        @NotNull LocalDate expiryDate,
+        @NotNull LocalDateTime expiryDate,
         @NotNull @DecimalMin("0.0") BigDecimal sellingPrice
 ) { }

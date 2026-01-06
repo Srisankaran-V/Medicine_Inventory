@@ -1,13 +1,13 @@
 package com.inventory.medicine.dto.drug;
 
-import com.inventory.medicine.model.drug.Drug;
-import com.inventory.medicine.model.drug.DrugClassification;
-import com.inventory.medicine.model.drug.DrugForm;
-import com.inventory.medicine.model.drug.DrugStatus;
+import com.inventory.medicine.model.Drug;
+import com.inventory.medicine.model.DrugClassification;
+import com.inventory.medicine.model.DrugForm;
+import com.inventory.medicine.model.DrugStatus;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 
 public record DrugResponse(
         Long id,
@@ -18,7 +18,7 @@ public record DrugResponse(
         DrugForm drugForm,
         Integer quantityInStock,
         Integer minStockLevel,
-        LocalDate expiryDate,
+        LocalDateTime expiryDate,
         BigDecimal sellingPrice,
         DrugStatus drugStatus,
         LocalDateTime createdAt,

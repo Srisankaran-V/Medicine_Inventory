@@ -1,4 +1,4 @@
-package com.inventory.medicine.model.drug;
+package com.inventory.medicine.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+//import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -51,7 +51,7 @@ public class Drug {
     private Integer minStockLevel;
 
     @Column(name = "expiry_date")
-    private LocalDate expiryDate;
+    private LocalDateTime expiryDate;
 
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal sellingPrice;

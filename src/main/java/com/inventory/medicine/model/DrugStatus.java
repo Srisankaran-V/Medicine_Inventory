@@ -1,4 +1,4 @@
-package com.inventory.medicine.model.drug;
+package com.inventory.medicine.model;
 
 public enum DrugStatus {
     ACTIVE,

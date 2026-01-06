@@ -1,3 +1,13 @@
 spring:
   application:
     name: medicine
+  datasource:
+    url: jdbc:postgresql://localhost:5432/medicine
+    username: postgres
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+
