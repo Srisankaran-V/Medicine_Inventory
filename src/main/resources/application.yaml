@@ -7,7 +7,31 @@ spring:
     password: admin
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  data:
+    web:
+      pageable:
+        max-page-size: 100
+  security:
+    jwt:
+      secret-key: kQqBAtyraMXB/8DDi5cF2eJWutBoQIifMGbm4SuQi0P/g+qWSePprWOSmIyqLXs3eIZRTPH8vx3BoExvej/gDQ==
+      expiration: 86400000
+      refresh-expiration: 604800000
 
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
 
+## Enable the swagger-ui
+#  springdoc.swagger-ui.enabled=true
+#
+#  # Standardize the path
+#  springdoc.swagger-ui.path=/swagger-ui.html
+#
+#  # Fixes potential static resource mapping issues in Spring Boot 3.x
+#  spring.mvc.pathmatch.matching-strategy=ant_path_matcher

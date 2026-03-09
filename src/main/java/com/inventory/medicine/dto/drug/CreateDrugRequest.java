@@ -1,7 +1,7 @@
 package com.inventory.medicine.dto.drug;
 
-import com.inventory.medicine.model.DrugClassification;
-import com.inventory.medicine.model.DrugForm;
+import com.inventory.medicine.model.drug.DrugClassification;
+import com.inventory.medicine.model.drug.DrugForm;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
