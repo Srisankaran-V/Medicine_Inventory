@@ -27,7 +27,13 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())// Enable CORS configuration
+                .cors(cors -> {})
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/users/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/users/doctor/**").hasRole("DOCTOR")
@@ -46,7 +52,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // Allow all paths
-                .allowedOrigins("http://localhost:3001") // React frontend URL
+                .allowedOrigins("http://localhost:5173") // React frontend URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allowed HTTP methods
                 .allowedHeaders("*") // Allow all headers
                 .allowCredentials(true); // Allow cookies/credentials

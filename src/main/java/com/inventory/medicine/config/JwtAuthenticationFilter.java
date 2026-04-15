@@ -29,31 +29,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("request : "+request);
+
 
         final String authorizationHeader = request.getHeader("Authorization");
-        System.out.println("Authorization Header "+authorizationHeader);
+
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            System.out.println("Authorization Header came to if JWTAuthenticationFilter");
             filterChain.doFilter(request, response);
-            System.out.println("Authorization Header passed filterChange doFilter method");
-
             return;
         }
 
         final String jwt = authorizationHeader.substring(7);
-        System.out.println("jwt token substringed" + jwt);
         String userEmail = null;
-        System.out.println("userEmail is :"+userEmail);
 
         try {
-            System.out.println("email extraction started from jwt");
-
             userEmail = jwtService.extractEmail(jwt);
-            System.out.println("email extracted from jwt");
+
         } catch (RuntimeException e) {
-            System.out.println("can not extract email");
+
             ErrorResponse errorResponse = ErrorResponse.builder()
                     .error("Unauthorized")
                     .message("Invalid JWT token JWTAuthenticationFilter1")

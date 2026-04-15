@@ -5,6 +5,7 @@ import com.inventory.medicine.model.patient.Gender;
 import java.time.LocalDateTime;
 
 public record PatientResponse(
+        Long id,
         String name,
         Integer age,
         Gender gender,

@@ -4,14 +4,18 @@ import com.inventory.medicine.dto.doctor.CreateDoctorRequest;
 import com.inventory.medicine.dto.doctor.DoctorResponse;
 import com.inventory.medicine.dto.doctor.DoctorSearchCriteria;
 import com.inventory.medicine.dto.doctor.UpdateDoctorRequest;
+import com.inventory.medicine.dto.patient.PatientSearchCriteria;
+import com.inventory.medicine.model.auth.User;
 import com.inventory.medicine.service.DoctorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,8 +26,11 @@ public class DoctorController {
     private final DoctorService doctorService;
 
     @PostMapping
-    public ResponseEntity<DoctorResponse> createDoctor(@Valid @RequestBody CreateDoctorRequest request) {
-        return new ResponseEntity<>(doctorService.createDoctor(request), HttpStatus.CREATED);
+    public ResponseEntity<?> createDoctor(
+
+            @RequestBody CreateDoctorRequest request
+    ) {
+        return ResponseEntity.ok(doctorService.createDoctor(request));
     }
 
     @PutMapping("/{id}")
@@ -38,19 +45,25 @@ public class DoctorController {
         return ResponseEntity.ok(doctorService.getDoctorById(id));
     }
 
-    @GetMapping("/search")
+    @GetMapping
     public ResponseEntity<Page<DoctorResponse>> searchDoctors(
             DoctorSearchCriteria criteria,
-            @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        System.out.println("keyword : "+criteria.keyword());
         return ResponseEntity.ok(doctorService.searchDoctors(
-                criteria.keyword(),
-                criteria.specialization(),
-                criteria.active(),
+                criteria,
                 pageable));
     }
 
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<DoctorResponse> deactivateDoctor(@PathVariable Long id) {
         return ResponseEntity.ok(doctorService.deactivateDoctor(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<DoctorResponse> deleteDoctor(@PathVariable Long id){
+        return ResponseEntity.ok(doctorService.deleteDoctor(id));
     }
 }

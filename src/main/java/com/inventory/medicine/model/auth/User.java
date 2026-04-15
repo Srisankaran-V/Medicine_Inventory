@@ -28,13 +28,16 @@ public class User implements UserDetails {
     private Long id;
 
     @NotBlank(message = "Full name is required")
+    @Column(nullable = false)
     private String fullName;
 
     @Email(message = "Email should be correct format")
     @NotBlank(message = "Email is required")
     @Column(unique = true, nullable = false)
     private String email;
+
     @NotBlank(message = "Password is required")
+    @Column(nullable = false)
     private String password;
 
     private String phone;

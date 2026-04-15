@@ -11,10 +11,5 @@ public record RegisterRequest(
         @NotBlank String fullName,
         @Email String email,
         @NotBlank @Size(min = 8) String password,
-        @NotNull Role role,
-
-        // Optional Profile Fields
-        Specialization specialization, // Only if DOCTOR
-        String licenseNumber,         // Only if DOCTOR
-        String patientCode            // Only if PATIENT
+        @NotNull Role role
 ) {}

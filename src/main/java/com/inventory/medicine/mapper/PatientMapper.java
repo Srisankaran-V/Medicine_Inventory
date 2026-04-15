@@ -10,6 +10,7 @@ public class PatientMapper {
         if (patient == null) return null;
 
         return new PatientResponse(
+                patient.getId(),
                 patient.getUser().getFullName(), // Fetch from User
                 patient.getAge(),
                 patient.getGender(),

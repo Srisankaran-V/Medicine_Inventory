@@ -1,6 +1,7 @@
 package com.inventory.medicine.model.doctor;
 
 import com.inventory.medicine.model.auth.User;
+import com.inventory.medicine.model.patient.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -25,6 +26,13 @@ public class Doctor {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    private String phone;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    private Integer age;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

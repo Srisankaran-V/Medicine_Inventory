@@ -16,7 +16,6 @@ public record UpdatePatientRequest(
         Integer age,
         @Pattern(regexp = "^\\+?[0-9.]{10,15}$")
         String phone,
-        String email,
         String address,
         @Pattern(regexp = "^(A|B|AB|O)[+-]$")
         String bloodGroup,

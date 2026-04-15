@@ -6,13 +6,17 @@ import com.inventory.medicine.dto.patient.PatientSearchCriteria;
 import com.inventory.medicine.dto.patient.UpdatePatientRequest;
 import com.inventory.medicine.exception.PatientNotFoundException;
 import com.inventory.medicine.mapper.PatientMapper;
+import com.inventory.medicine.model.auth.Role;
+import com.inventory.medicine.model.auth.User;
 import com.inventory.medicine.model.patient.Gender;
 import com.inventory.medicine.model.patient.Patient;
+import com.inventory.medicine.repository.AuthRepository;
 import com.inventory.medicine.repository.PatientRepository;
 import com.inventory.medicine.specification.PatientSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +27,18 @@ import java.util.UUID;
 public class PatientService {
     private final PatientRepository patientRepository;
     private final PatientMapper patientMapper;
+    private final AuthRepository authRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public PatientService(PatientRepository patientRepository, PatientMapper patientMapper){
+    public PatientService(
+            PatientRepository patientRepository,
+            PatientMapper patientMapper,
+            AuthRepository authRepository, PasswordEncoder passwordEncoder
+    ){
         this.patientRepository = patientRepository;
         this.patientMapper = patientMapper;
+        this.authRepository = authRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public PatientResponse findById(Long id) {
@@ -35,28 +47,46 @@ public class PatientService {
                 .orElseThrow(() -> new PatientNotFoundException(id));
     }
 
+    // 1. Inject PasswordEncoder at the top of your class
     @Transactional
     public PatientResponse createPatient(CreatePatientRequest request) {
-        // 1. Corrected Duplicate Check (Using the nested User property)
+        // 1. Duplicate Check (Clinical Profile)
         if(patientRepository.existsByUser_FullNameAndAgeAndUser_Phone(request.name(), request.age(), request.phone())) {
             throw new RuntimeException("Duplicate Patient record already exists.");
         }
 
-        // Note: For a real app, you should create a User entity here
-        // OR call authService.registerPatient().
-        // For now, I'll assume the User is handled via cascading.
+        // 2. Identify or Create the User
+        User user = authRepository.findByEmail(request.email())
+                .orElseGet(() -> User.builder()
+                        .email(request.email())
+                        .fullName(request.name())
+                        .phone(request.phone())
+                        // 🔐 FIX: Always encode the password
+                        .password(passwordEncoder.encode(request.password()))
+                        .role(Role.PATIENT)
+                        .build());
 
+        // 3. Security Check: Prevent one User from having multiple Patient Profiles
+        // If the user already has a saved ID, check if they are linked to a patient
+        if(user.getId() != null && patientRepository.findByUser(user).isPresent()){
+            throw new RuntimeException("This account is already registered as a patient.");
+        }
+
+        // 4. Build the Clinical Profile
         Patient p = Patient.builder()
+                .user(user) // Link established
                 .age(request.age())
                 .gender(request.gender())
                 .address(request.address())
                 .bloodGroup(request.bloodGroup())
-                .allergies(request.allergies())
+                .allergies((request.allergies() != null && !request.allergies().isBlank())
+                        ? request.allergies() : "No Allergies")
                 .notes(request.notes())
                 .patientCode("PAT-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
                 .active(true)
                 .build();
 
+        // 5. Save (CascadeType.ALL in Patient entity will handle saving the User automatically)
         return patientMapper.toDTO(patientRepository.save(p));
     }
 
@@ -68,7 +98,7 @@ public class PatientService {
         // Update Identity (Nested User Object)
         if (request.name() != null) p.getUser().setFullName(request.name());
         if (request.phone() != null) p.getUser().setPhone(request.phone());
-        if (request.email() != null) p.getUser().setEmail(request.email());
+
 
         // Update Clinical Profile
         if (request.gender() != null) p.setGender(request.gender());

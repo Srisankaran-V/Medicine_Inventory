@@ -1,6 +1,7 @@
 package com.inventory.medicine.repository;
 
 //import com.inventory.medicine.entity.Patient;
+import com.inventory.medicine.model.auth.User;
 import com.inventory.medicine.model.patient.Patient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public interface PatientRepository extends JpaRepository<Patient, Long>, JpaSpecificationExecutor<Patient> {
     Optional<Patient> findByPatientCode(String patientCode);
 
+    Optional<Patient> findByUser(User user);
     // Check for duplicates by looking into the joined User table
     boolean existsByUser_FullNameAndAgeAndUser_Phone(String name, Integer age, String phone);
 }

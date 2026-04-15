@@ -34,5 +34,7 @@ public record CreatePatientRequest(
         String allergies,
 
         @Size(max = 1000)
-        String notes
+        String notes,
+
+        String password
         ) { }

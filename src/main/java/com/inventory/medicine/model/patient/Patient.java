@@ -37,6 +37,8 @@ public class Patient {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    private String phone;
+
 
     @Column(unique = true, nullable = false)
     private String patientCode;
